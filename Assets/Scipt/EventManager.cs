@@ -6,10 +6,9 @@ public static class EventManager
 {
    
     public static Action IsEndGame = delegate { };
-    
     public static Action StartGame = delegate { };
     public static Action SetUpGameplay = delegate { };
-
+    
     public static void OnSetupGameplay()
     {
         SetUpGameplay.Invoke();

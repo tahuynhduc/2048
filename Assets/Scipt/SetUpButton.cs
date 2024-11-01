@@ -11,6 +11,6 @@ public class SetUpButton : MonoBehaviour
         BoardManager.colRowCount = int.Parse(inputField.text);
         EventManager.OnSetupGameplay();
         BoardManager.SetUpGameplay();
-        GameManager.SpawnNumbers();
+        GameManager.SpawnNumbers(false);
     }
 }

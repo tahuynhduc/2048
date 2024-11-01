@@ -11,6 +11,7 @@ public class GameManager : TemporaryMonoSingleton<GameManager>
     private BoardManager BoardManager => SingletonManager.BoardManager;
     private int ColRow => BoardManager.colRowCount;
     private int Row => BoardManager.colRowCount;
+    public int score;
     private void OnEnable()
     {
         EventManager.StartGame += ReStartGame;
@@ -18,6 +19,7 @@ public class GameManager : TemporaryMonoSingleton<GameManager>
 
     private void Start()
     {
+        Application.targetFrameRate = 60;
         SpawnNumbers();
     }
 
@@ -28,6 +30,7 @@ public class GameManager : TemporaryMonoSingleton<GameManager>
 
     private void ReStartGame()
     {
+        score = 0;
         for (var i = 0; i < ColRow; i++)
         {
             for (var j = 0; j < Row; j++)
@@ -40,11 +43,31 @@ public class GameManager : TemporaryMonoSingleton<GameManager>
             SpawnNumber();
         }
     }
-    public void SpawnNumbers()
+    public void SpawnNumbers(bool isGetData = true)
     {
+        IUpdateNumber number;
+        if (isGetData)
+        {
+            DataGame dataGame = new DataGame();
+            var data =  dataGame.GetDataGame(BoardManager.colRowCount);
+            if (data == null)
+            {
+                SpawnNumbers(false);
+                return;
+            }
+            score = data.score;
+            foreach (var index in data.positionMatrix)
+            {
+                var obj = Instantiate(prefab, prefab.transform.position, Quaternion.identity, transParent);
+                obj.SetActive(true);
+                BoardManager.matrixManager.MatrixNumbers[index.i,index.j] = obj.GetComponent<Number>();
+                number = obj.GetComponent<Number>();
+                number.UpdateNumber(index.value);
+            }
+            return;
+        }
         for (var i = 0; i < ColRow; i++)
         {
-            IUpdateNumber number;
             for (var j = 0; j < Row; j++)
             {
                 var obj = Instantiate(prefab, prefab.transform.position, Quaternion.identity, transParent);
@@ -60,6 +83,11 @@ public class GameManager : TemporaryMonoSingleton<GameManager>
         }
     }
 
+    public void Save()
+    {
+        DataGame dataGame = new DataGame();
+        dataGame.Save(BoardManager.matrixManager.MatrixNumbers);
+    }
     public Color GetColor(int number)
     {
         return  colorConfig.GetColor(number);

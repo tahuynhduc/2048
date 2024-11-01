@@ -21,6 +21,7 @@ public class MoveRight:MoveHandle
                 {
                     var nextNumber = MatrixNumbers[i, j];
                     ICurrentNumber = currentNumber;
+                    GameManager.score += currentNumber.numberValue;
                     ICurrentNumber.UpdateNumber(currentNumber.numberValue);
                     INextNumber = nextNumber;
                     INextNumber.UpdateNumber(-nextNumber.numberValue);

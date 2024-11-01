@@ -20,6 +20,7 @@ public class MoveUp:MoveHandle
                 {
                     var nextNumber = MatrixNumbers[j, i];
                     ICurrentNumber = currentNumber;
+                    GameManager.score += currentNumber.numberValue;
                     ICurrentNumber.UpdateNumber(currentNumber.numberValue);
                     INextNumber = nextNumber;
                     INextNumber.UpdateNumber(-nextNumber.numberValue);

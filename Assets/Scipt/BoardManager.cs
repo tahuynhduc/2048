@@ -7,18 +7,20 @@ using UnityEngine.Serialization;
 public class BoardManager : TemporaryMonoSingleton<BoardManager>
 {
     private GameManager GameManager => SingletonManager.GameManager;
-    
+
     public MatrixManager matrixManager;
     public int colRowCount;
+
     protected override void Init()
     {
-        matrixManager = new MatrixManager(colRowCount,colRowCount);
+        matrixManager = new MatrixManager(colRowCount, colRowCount);
     }
+
     private void Update()
     {
         matrixManager.Move();
     }
-    
+
     public void SetUpGameplay()
     {
         if (matrixManager != null)
@@ -28,12 +30,14 @@ public class BoardManager : TemporaryMonoSingleton<BoardManager>
                 number.DestroyObj();
             }
         }
-        matrixManager = new MatrixManager(colRowCount,colRowCount);
+
+        matrixManager = new MatrixManager(colRowCount, colRowCount);
     }
+
     public void OnMove(TouchDirection moveDirection)
-    { 
-        var moveState= matrixManager.GetMoveDirection(moveDirection);
-        if(moveState) StartCoroutine(WaitToSpawn());
+    {
+        var moveState = matrixManager.GetMoveDirection(moveDirection);
+        if (moveState) StartCoroutine(WaitToSpawn());
     }
 
     private IEnumerator WaitToSpawn()

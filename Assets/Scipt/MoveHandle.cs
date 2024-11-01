@@ -1,7 +1,7 @@
 public abstract class MoveHandle
 {
     protected Number[,] MatrixNumbers => SingletonManager.BoardManager.matrixManager.MatrixNumbers;
-    
+    protected GameManager GameManager => SingletonManager.GameManager;
     protected int rowCount;
     protected int colCount;
     protected MoveHandle(int i,int j)

@@ -25,7 +25,7 @@ public class GridLayoutCustom : MonoBehaviour
     private void SetUpGameplay()
     {
         _gridLayout = GetComponent<GridLayoutGroup>();
-        var wight = (Screen.width - 400) / RowCount;
+        var wight = (Screen.width - 200) / RowCount;
         var space = _gridLayout.spacing.x;
         _gridLayout.constraintCount = RowCount;
         _gridLayout.cellSize = new Vector2(wight-space, wight-space);
