@@ -20,9 +20,9 @@ public class MoveLeft :MoveHandle
                 {
                     var nextNumber = MatrixNumbers[i, j];
                     ICurrentNumber = currentNumber;
-                    ICurrentNumber.UpdateNumber(Color.white, currentNumber.numberValue);
+                    ICurrentNumber.UpdateNumber(currentNumber.numberValue);
                     INextNumber = nextNumber;
-                    INextNumber.UpdateNumber(Color.white, -nextNumber.numberValue);                    
+                    INextNumber.UpdateNumber(-nextNumber.numberValue);                    
                     // Debug.LogError($"i:{i}-----j:{j}");
                     break;
                 }
@@ -45,9 +45,9 @@ public class MoveLeft :MoveHandle
                 var nextNumber = GetNextNumber(i,j);
                 if (!currentNumber.IsNull()) continue;
                 ICurrentNumber = currentNumber;
-                ICurrentNumber.UpdateNumber(Color.white, nextNumber.numberValue);
+                ICurrentNumber.UpdateNumber(nextNumber.numberValue);
                 INextNumber = nextNumber;
-                INextNumber.UpdateNumber(Color.white, -nextNumber.numberValue);
+                INextNumber.UpdateNumber(-nextNumber.numberValue);
             }
         }
     }

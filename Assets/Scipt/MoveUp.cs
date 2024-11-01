@@ -20,9 +20,9 @@ public class MoveUp:MoveHandle
                 {
                     var nextNumber = MatrixNumbers[j, i];
                     ICurrentNumber = currentNumber;
-                    ICurrentNumber.UpdateNumber(Color.white, currentNumber.numberValue);
+                    ICurrentNumber.UpdateNumber(currentNumber.numberValue);
                     INextNumber = nextNumber;
-                    INextNumber.UpdateNumber(Color.white, -nextNumber.numberValue);
+                    INextNumber.UpdateNumber(-nextNumber.numberValue);
                     //Debug.LogError($"i:{i}-----j:{j}");
                     break;
                 }
@@ -41,13 +41,13 @@ public class MoveUp:MoveHandle
         {
             for (var j = 0; j < colCount; j++)
             {
-                var currentNumber = MatrixNumbers[j, i];
+                var currentNumber = MatrixNumbers[i, j];
                 var nextNumber = GetNextNumber(i,j);
                 if (!currentNumber.IsNull()) continue;
                 ICurrentNumber = currentNumber;
-                ICurrentNumber.UpdateNumber(Color.white, nextNumber.numberValue);
+                ICurrentNumber.UpdateNumber(nextNumber.numberValue);
                 INextNumber = nextNumber;
-                INextNumber.UpdateNumber(Color.white, -nextNumber.numberValue);
+                INextNumber.UpdateNumber(-nextNumber.numberValue);
             }
         }
     }

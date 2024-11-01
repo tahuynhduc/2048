@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class MoveDown:MoveHandle
 {
     public MoveDown(int i, int j) : base(i, j)
@@ -13,16 +11,16 @@ public class MoveDown:MoveHandle
         for (var i = rowCount -1; i >=0 ; i--)
         {
             Number currentNumber = null;
-            for (var j = 0; j < colCount; j++)
+            for (var j = colCount-1; j >=0 ; j--)
             {
                 if (MatrixNumbers[j, i].IsNull()) continue;
                 if (currentNumber?.numberValue == MatrixNumbers[j, i].numberValue)
                 {
                     var nextNumber = MatrixNumbers[j, i];
                     ICurrentNumber = currentNumber;
-                    ICurrentNumber.UpdateNumber(Color.white, currentNumber.numberValue);
+                    ICurrentNumber.UpdateNumber(currentNumber.numberValue);
                     INextNumber = nextNumber;
-                    INextNumber.UpdateNumber(Color.white, -nextNumber.numberValue);
+                    INextNumber.UpdateNumber(-nextNumber.numberValue);
                     //Debug.LogError($"i:{i}-----j:{j}");
                     break;
                 }
@@ -39,15 +37,15 @@ public class MoveDown:MoveHandle
         IUpdateNumber INextNumber;
         for (var i = rowCount -1; i >=0 ; i--)
         {
-            for (var j = 0; j < colCount; j++)
+            for (var j = colCount-1; j >=0 ; j--)
             {
-                var currentNumber = MatrixNumbers[j, i];
+                var currentNumber = MatrixNumbers[i, j];
                 var nextNumber = GetNextNumber(i,j);
                 if (!currentNumber.IsNull()) continue;
                 ICurrentNumber = currentNumber;
-                ICurrentNumber.UpdateNumber(Color.white, nextNumber.numberValue);
+                ICurrentNumber.UpdateNumber(nextNumber.numberValue);
                 INextNumber = nextNumber;
-                INextNumber.UpdateNumber(Color.white, -nextNumber.numberValue);
+                INextNumber.UpdateNumber(-nextNumber.numberValue);
             }
         }
     }

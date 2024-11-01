@@ -8,11 +8,12 @@ public class Number : MonoBehaviour,IUpdateNumber
     public int numberValue;
     [SerializeField] private Image color;
     [SerializeField] private Text valueText;
-    public void UpdateNumber(Color newColor,int numberValue)
+    private GameManager GameManager => SingletonManager.GameManager;
+    public void UpdateNumber(int newNumber)
     {
-        this.numberValue += numberValue;
-        color.color = newColor;
-        valueText.text = this.numberValue.ToString();
+        numberValue += newNumber;
+        color.color = GameManager.GetColor(numberValue);
+        valueText.text = numberValue.ToString();
         if (IsNull())valueText.text = null;
     }
     
@@ -25,10 +26,15 @@ public class Number : MonoBehaviour,IUpdateNumber
     {
         return numberValue == 0;
     }
+
+    public void DestroyObj()
+    {
+        Destroy(gameObject);
+    }
 }
 public interface IUpdateNumber
 {
-    public void UpdateNumber(Color newColor, int numberValue);
+    public void UpdateNumber(int newNumber);
 }
 
 

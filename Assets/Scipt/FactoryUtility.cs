@@ -2,8 +2,8 @@ public static class FactoryUtility
 {
     public static MoveHandle GetMoveDirection(TouchDirection direction)
     {
-        var rowCount = BoardManager.Instance.rowCount;
-        var colCount = BoardManager.Instance.colCount;
+        var rowCount = BoardManager.Instance.colRowCount;
+        var colCount = BoardManager.Instance.colRowCount;
         switch (direction)
         {
             case TouchDirection.Up:

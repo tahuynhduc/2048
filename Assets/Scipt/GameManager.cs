@@ -1,89 +1,107 @@
-using System;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : TemporaryMonoSingleton<GameManager>
 {
     [SerializeField] private GameObject prefab;
-    private BoardManager BoardManager => BoardManager.Instance;
-
-    public bool isSpawnNumber;
-
-    private void Update()
+    [SerializeField] private ColorConfig colorConfig;
+    [SerializeField] private Transform transParent;
+    private const int DefaultValue = 2;
+    private BoardManager BoardManager => SingletonManager.BoardManager;
+    private int ColRow => BoardManager.colRowCount;
+    private int Row => BoardManager.colRowCount;
+    private void OnEnable()
     {
-        if (isSpawnNumber) SpawnNumber();
+        EventManager.StartGame += ReStartGame;
     }
 
     private void Start()
     {
-        var col = BoardManager.matrixManager.MatrixNumbers.GetLength(0);
-        var row = BoardManager.matrixManager.MatrixNumbers.GetLength(1);
-        for (var i = 0; i < col; i++)
+        SpawnNumbers();
+    }
+
+    private void OnDisable()
+    {
+        EventManager.StartGame -= ReStartGame;
+    }
+
+    private void ReStartGame()
+    {
+        for (var i = 0; i < ColRow; i++)
+        {
+            for (var j = 0; j < Row; j++)
+            {
+                var number =  BoardManager.matrixManager.MatrixNumbers[i, j];
+                IUpdateNumber INumber = BoardManager.matrixManager.MatrixNumbers[i, j];
+                INumber.UpdateNumber(-number.numberValue);
+            }
+            if(i>1) continue;
+            SpawnNumber();
+        }
+    }
+    public void SpawnNumbers()
+    {
+        for (var i = 0; i < ColRow; i++)
         {
             IUpdateNumber number;
-            for (var j = 0; j < row; j++)
+            for (var j = 0; j < Row; j++)
             {
-                var obj = Instantiate(prefab, prefab.transform.position, Quaternion.identity,
-                    BoardManager.transform);
+                var obj = Instantiate(prefab, prefab.transform.position, Quaternion.identity, transParent);
                 obj.SetActive(true);
                 BoardManager.matrixManager.MatrixNumbers[i, j] = obj.GetComponent<Number>();
                 number = BoardManager.matrixManager.MatrixNumbers[i, j];
-                number.UpdateNumber(Color.white, 0);
+                number.UpdateNumber(0);
             }
-            if(i>2) continue;
-            var randomIndex = this.RandomRange(0, row);
+            if(i>1) continue;
+            var randomIndex = this.RandomRange(0, Row);
             number = BoardManager.matrixManager.MatrixNumbers[i, randomIndex];
-            number.UpdateNumber(Color.yellow, 2);
+            number.UpdateNumber(DefaultValue);
         }
     }
-    
-    private void SpawnNumber()
+
+    public Color GetColor(int number)
     {
-        if (IsEndGame())
+        return  colorConfig.GetColor(number);
+    }
+    public void SpawnNumber()
+    {
+        var isSpawn = false;
+        foreach (var number in BoardManager.matrixManager.MatrixNumbers)
         {
-            // EventManager.OnEndGame();
-            return;
+            if(!number.IsNull()) continue;
+            isSpawn = true;
+
         }
-        var col = BoardManager.matrixManager.MatrixNumbers.GetLength(0);
-        var row = BoardManager.matrixManager.MatrixNumbers.GetLength(1);
-        var randomCol = this.RandomRange(0, col);
-        var randomRow = this.RandomRange(0, row);
+        if(!isSpawn) return;
+        var randomCol = this.RandomRange(0, ColRow);
+        var randomRow = this.RandomRange(0, Row);
         var currentNumber = BoardManager.matrixManager.MatrixNumbers[randomCol, randomRow];
-        if (currentNumber.numberValue != 0)
+        if (!currentNumber.IsNull())
         {
             SpawnNumber();
             return;
         }
-        isSpawnNumber = false;
-        BoardManager.OnMove(TouchDirection.None);
-        IUpdateNumber INumber = BoardManager.matrixManager.MatrixNumbers[randomCol, randomRow];
-        INumber.UpdateNumber(Color.yellow, 2);
+        IUpdateNumber INumber = currentNumber;
+        INumber.UpdateNumber(DefaultValue);
     }
-    private bool IsEndGame()
+    public bool IsEndGame()
     {
-        var col = BoardManager.matrixManager.MatrixNumbers.GetLength(0);
-        var row = BoardManager.matrixManager.MatrixNumbers.GetLength(1);
-        for (var i = 0; i < col; i++)
+        var gameOverState = false;
+        for (var i = 0; i < ColRow; i++)
         {
-            for (var j = 0; j < row; j++)
+            for (var j = 0; j < Row; j++)
             {
-                var currentNumber = BoardManager.matrixManager.MatrixNumbers[i, j];
-                if (currentNumber.IsNull())
+                
+                //khong the di chuyen
+                gameOverState = true;
+                if(!BoardManager.matrixManager.CheckMove(i, j))
                 {
                     return false;
                 }
             }
         }
-
-        return true;
-    }
-}
-
-public class EventManager
-{
-    public static Action IsEndGame = delegate { };
-    public static void OnEndGame()
-    {
-        IsEndGame.Invoke();
+        
+        return gameOverState;
     }
 }
